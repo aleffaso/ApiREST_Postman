@@ -1,6 +1,6 @@
-# Claviculario project
+# API REST Using Postman for test
 
-The main idea is build an embbeded system to provide a 'Key Bank Access'. Building the hardware and software, the project brings the technology to guarantee the user access and get the key from the box.
+The main idea is to buildan API REST to get know how APIs work in general. On this project there was no need to use a database.
 
 ## Software
 
