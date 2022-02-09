@@ -37,6 +37,21 @@ The main idea is build an embbeded system to provide a 'Key Bank Access'. Buildi
 </p>
 
 - Follow all steps and you'll see "Ok"
-- Now, go to `-  http://localhost:3000/games/` and the new data will show up
+- Now, go to `http://localhost:3000/games/` and the new data will show up
 
 ### DELETE method: Deleting data
+
+- Follow the same steps before but instead of using `POST` you can use `DELETE`
+- Put the end-point `http://localhost:3000/game/1`
+- Now, go to `http://localhost:3000/games/` and the data remaining will show up,
+
+### PUT method: Update specific data
+
+- Set it as the picture below:
+
+<p align="center">
+  <img  src="src/img2.png">
+</p>
+
+- Follow all steps and you'll see "Ok"
+- Now, go to `http://localhost:3000/games/` and the updated data will show up
