@@ -1,9 +1,21 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const dotenv = require('dotenv');
+const auth = require("./auth");
+
+dotenv.config({path: './.env'});
+
+const JWTSecret = process.env.JWT_SECRET
+
+app.use(cors());
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+
 
 var DB = {
     games: [
@@ -26,15 +38,30 @@ var DB = {
             year: 2009,
             price: 80
         }
+    ],
+
+    users: [
+        {
+            id: 1,
+            name: "Aleff",
+            email: "aleffaso@me.com",
+            password: "test123" 
+        },
+        {
+            id: 10,
+            name: "Antonio",
+            email: "antonio@me.com",
+            password: "test123" 
+        }
     ]
 }
 
-app.get("/games", (req,res) => {
+app.get("/games", auth, (req,res) => {
     res.statusCode = 200;
-    res.json(DB.games);
+    res.json({user: req.loggedUser, games: DB.games});
 });
 
-app.get("/game/:id", (req,res) => {
+app.get("/game/:id", auth, (req,res) => {
     
     if(isNaN(req.params.id)){
         res.sendStatus(400);
@@ -51,7 +78,7 @@ app.get("/game/:id", (req,res) => {
     }
 });
 
-app.post("/game", (req,res) => {
+app.post("/game", auth, (req,res) => {
     
     var {title, price, year} = req.body;
 
@@ -70,7 +97,7 @@ app.post("/game", (req,res) => {
 
 });
 
-app.delete("/game/:id", (req, res) => {
+app.delete("/game/:id", auth, (req, res) => {
     if(isNaN(req.params.id)){
         res.sendStatus(400);
     }else{
@@ -86,7 +113,7 @@ app.delete("/game/:id", (req, res) => {
     }
 });
 
-app.put("/game/:id", (req,res) => {
+app.put("/game/:id", auth, (req,res) => {
     
     if(isNaN(req.params.id)){
         res.sendStatus(400);
@@ -117,6 +144,46 @@ app.put("/game/:id", (req,res) => {
             res.sendStatus(404);
         }
     }
+});
+
+app.post("/auth", auth, (req,res) => {
+
+    var {email, password} =  req.body;
+
+    if(email != undefined ){
+        
+        var user = DB.users.find(user => user.email == email);
+
+        if(user != undefined){
+
+            if(user.password == password){
+
+                jwt.sign({id:user.id, email:user.email}, JWTSecret, {expiresIn: '1h'}, (err, token) => {//Payload
+                    if(err){
+                        res.status(400);
+                        res.json({err:"Failed"});
+                    }else{
+                        res.status(200);
+                        res.json({token: token});
+                    }
+                }); 
+
+            }else{
+                res.status(401);
+                res.json({err: "Password does not match"});
+            }
+
+        }else{
+            res.status(404);
+            res.json({err: "The email adress does not exist"});
+        }
+
+    }else{
+        res.status(400);
+        res.json({err: "The email address is not valid"});
+    }
+
+
 });
 
 app.listen(3000,() => {

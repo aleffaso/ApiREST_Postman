@@ -9,9 +9,12 @@ The main idea is to buildan API REST to get know how APIs work in general. On th
 
 ## Libraries 
 
-- Body Parser => Read params and body req
+- Body Parser => Read params and body req;
+- Cors => Allow external users use API;
+- Dotenv => Using enviroment keys;
 - Express => Flexible framework;
 - Nodemon => Update server automatically;
+- JWT => Json Web Token
 
 <hr>
 
